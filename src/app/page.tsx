@@ -1,24 +1,26 @@
-export default function Home() {
+import { fetchUpcomingLaunches, filterFloridaLaunches, sortLaunchesByDate } from '@/lib/launchApi';
+import { LaunchList } from '@/components/LaunchList';
+
+export const revalidate = 300; // Revalidate every 5 minutes
+
+export default async function Home() {
+  const launches = await fetchUpcomingLaunches();
+  const floridaLaunches = filterFloridaLaunches(launches);
+  const sortedLaunches = sortLaunchesByDate(floridaLaunches);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div className="text-center">
-        <h1 className="text-5xl font-bold text-gray-900 mb-6">NextLaunch</h1>
-        <p className="text-xl text-gray-600 mb-8">Your Next.js webapp is ready to launch</p>
-        <div className="flex gap-4 justify-center">
-          <a
-            href="#"
-            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
-          >
-            Get Started
-          </a>
-          <a
-            href="#"
-            className="px-6 py-3 bg-gray-200 text-gray-900 font-semibold rounded-lg hover:bg-gray-300 transition"
-          >
-            Learn More
-          </a>
+    <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">🚀 NextLaunch</h1>
+          <p className="text-xl text-gray-600 mb-2">Upcoming Florida Space Launches</p>
+          <p className="text-gray-500">Real-time data from Launch Library 2</p>
         </div>
+
+        {/* Launch List */}
+        <LaunchList initialLaunches={sortedLaunches} />
       </div>
     </main>
-  )
+  );
 }
